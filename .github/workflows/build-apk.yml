@@ -17,6 +17,13 @@ jobs:
         with:
           python-version: '3.11'
 
+      # ✅ تثبيت Flutter مسبقًا يمنع ظهور سؤال [y/n] تمامًا
+      - name: Install Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.4'
+          cache: true
+
       - name: Install Flet
         run: pip install flet flet-cli
 
