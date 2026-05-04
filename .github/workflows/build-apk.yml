@@ -1,1 +1,42 @@
+name: Build Flet Android APK
 
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.41.4"
+          cache: true
+
+      - name: Install Flet
+        run: pip install flet flet-cli
+
+      - name: Build APK
+        run: flet build apk --module-name app
+
+      - name: Debug: Find APK location
+        run: |
+          echo "🔍 Searching for APK file..."
+          find . -name "*.apk" -type f
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: build/**/release/*.apk
+          if-no-files-found: warn
