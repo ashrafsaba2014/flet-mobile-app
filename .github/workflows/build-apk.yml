@@ -2,7 +2,7 @@ name: Build Flet Android APK
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   workflow_dispatch:
 
 jobs:
@@ -15,12 +15,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.41.4'
+          flutter-version: "3.41.4"
           cache: true
 
       - name: Install Flet
@@ -29,19 +29,14 @@ jobs:
       - name: Build APK
         run: flet build apk --module-name app
 
-      # 🔍 خطوة تشخيصية: البحث عن ملف APK وطباعة مساره الفعلي في السجلات
       - name: Debug: Find APK location
         run: |
           echo "🔍 Searching for APK file..."
           find . -name "*.apk" -type f
 
-      # ✅ رفع ملف الـ APK (باستخدام المسار القياسي لـ Flet/Flutter)
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          # ✅ الصيغة الصحيحة للمسارات المتعددة: قائمة نقطية
-          path: 
-            - build/app/outputs/apk/release/app-release.apk
-            - build/apk/release/app-release.apk
+          path: build/**/release/*.apk
           if-no-files-found: warn
