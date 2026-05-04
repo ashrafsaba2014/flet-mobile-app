@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5  # ✅ محدث لـ Node.js 24
+        uses: actions/checkout@v5
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -26,27 +26,22 @@ jobs:
       - name: Install Flet
         run: pip install flet flet-cli
 
-      # 🔍 خطوة تشخيصية: طباعة هيكل مجلد build لمعرفة مكان الـ APK الفعلي
-      - name: Debug: List build directory
-        run: |
-          echo "🔍 Searching for APK..."
-          find build -name "*.apk" -type f 2>/dev/null || echo "❌ No APK found"
-
       - name: Build APK
         run: flet build apk --module-name app
 
-      # 🔍 خطوة ثانية بعد البناء: البحث عن الـ APK
-      - name: Debug: Find APK after build
+      # 🔍 خطوة تشخيصية: البحث عن ملف APK وطباعة مساره الفعلي في السجلات
+      - name: Debug: Find APK location
         run: |
-          echo "🔍 Searching again after build..."
-          find . -name "*.apk" -type f 2>/dev/null || echo "❌ Still no APK"
+          echo "🔍 Searching for APK file..."
+          find . -name "*.apk" -type f
 
-      # ✅ رفع الـ APK من المسار الصحيح (المسار القياسي لـ Flutter/Flet)
+      # ✅ رفع ملف الـ APK (باستخدام المسار القياسي لـ Flet/Flutter)
       - name: Upload APK
-        uses: actions/upload-artifact@v4  # ✅ محدث لـ Node.js 24
+        uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: |
-            build/app/outputs/apk/release/app-release.apk
-            build/apk/release/app-release.apk
-          if-no-files-found: warn  # ⚠️ لا يفشل الـ Workflow إذا لم يُوجد الملف
+          # ✅ الصيغة الصحيحة للمسارات المتعددة: قائمة نقطية
+          path: 
+            - build/app/outputs/apk/release/app-release.apk
+            - build/apk/release/app-release.apk
+          if-no-files-found: warn
