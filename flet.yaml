@@ -1,17 +1,54 @@
-app:
-  name: "Ashraf Flash Light"
-  package: "com.ashraf.flashlight"
+name: Build Flet Android APK
 
-build:
-  android:
-    permissions:
-      - CAMERA
-    # 💡 هذا الجزء هو الذي يدمج كود الـ Java/Kotlin الخاص بالكشاف
-    dependencies:
-      - flet_flashlight
-      - flet_permission_handler
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
 
-# الاعتماديات العامة لبايثون
-dependencies:
-  - flet-flashlight
-  - flet-permission-handler
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.4'
+          cache: true
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flet flet-cli flet-flashlight flet-permission-handler
+
+      - name: Check Assets Directory
+        run: |
+          if [ ! -d "assets" ]; then
+            mkdir assets
+            echo "Created empty assets directory"
+          fi
+
+      - name: Build APK
+        run: |
+          # استخدام yes | للموافقة التلقائية على أي تنبيهات تخص الـ SDK
+          yes | flet build apk --module-name app
+
+      - name: List files (Debug)
+        run: find . -type f -name "*.apk"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Flashlight-App-Release
+          # البحث في كافة المجلدات لضمان العثور على الملف مهما كان مكانه
+          path: "**/*.apk"
+          if-no-files-found: error
