@@ -1,11 +1,11 @@
 app:
   name: "AshrafFlash"
-  package: "com.ashraf.final.light"
+  package: "com.ashraf.final.light.v3"
 
 build:
   android:
     permissions:
       - CAMERA
-    # إضافة هذه التبعية هنا هي التي تجعل الأزرار "تتكلم" مع الهاردوير
     dependencies:
       - flet_flashlight
+      - flet_permission_handler
