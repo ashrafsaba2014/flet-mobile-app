@@ -13,11 +13,15 @@ def main(page: Page):
     page.overlay.extend([flashlight, ph])
 
     def turn_on(e):
-        # ✅ طلب الإذن أولاً قبل التشغيل
-        status = ph.request_permission(Permission.CAMERA)
-        flashlight.turn_on()
-        page.snack_bar = SnackBar(content=Text("🔦 تم تشغيل الكشاف"))
-        page.snack_bar.open = True
+        try:
+            # ✅ طلب الإذن بطريقة أكثر أماناً
+            ph.request_permission(Permission.CAMERA)
+            flashlight.turn_on()
+            page.snack_bar = SnackBar(content=Text("🔦 تم تشغيل الكشاف"))
+            page.snack_bar.open = True
+        except Exception as ex:
+            page.snack_bar = SnackBar(content=Text(f"خطأ: {ex}"))
+            page.snack_bar.open = True
         page.update()
 
     def turn_off(e):
