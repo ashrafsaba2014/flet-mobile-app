@@ -6,7 +6,7 @@
 app:
   name: "Ashraf Helmy App"          # 📌 الاسم الداخلي للتطبيق
   title: "Ashraf Helmy"               # 📌 العنوان الذي يظهر تحت الأيقونة على الشاشة
-  description: "تطبيق كشاف مع أذونات"  # 📝 وصف التطبيق
+  description: "تطبيق كشاف احترافي"  # 📝 وصف التطبيق
   version: "1.0.0"                    # 🔢 إصدار التطبيق (يظهر للمستخدم)
   package: "com.ashraf.flashlight"      # 📦 اسم الحزمة الفريد (يجب أن يكون بترتيب عكسي مثل دومين)
 
@@ -18,7 +18,7 @@ build:
     version_code: 1                 # 🔢 رقم الإصدار الداخلي (يجب زيادته عند كل رفع لـ Google Play)
     
     # 🔓 الأذونات المطلوبة (أضف أو احذف حسب احتياجك)
-    permissions:      
+    permissions:
       - CAMERA                      # ✅ إذن الكاميرا ضروري للفلاش
       # - ACCESS_FINE_LOCATION      # 📍 الموقع الدقيق
       # - CAMERA                    # 📷 الكاميرا
