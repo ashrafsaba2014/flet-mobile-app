@@ -35,7 +35,7 @@ def main(page: Page):
             title=Text("خروج"),
             content=Text("هل تريد إغلاق التطبيق؟"),
             actions=[
-                TextButton("لا", on_click=lambda _: page.close_dialog()),
+                TextButton("لا", on_click = lambda _: page.close(page.dialog)),
                 TextButton("نعم", on_click=close_app),
             ],
         )
