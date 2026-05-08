@@ -12,7 +12,11 @@
 
 
 from flet import *                          # استيراد جميع أدوات مكتبة Flet لبناء الواجهة
-from flet_flashlight import Flashlight
+try:
+    from plyer import flashlight  # ✅ مكتبة قياسية للعتاد بدون واجهة
+except ImportError:
+    flashlight = None
+# from flet_flashlight import Flashlight
 # يجب تثبيت:     pip install flet-permission-handler
 # from flet_permission_handler import PermissionHandler  # ✅ إزالة PermissionGroup
 
@@ -29,16 +33,24 @@ def main(page: Page):                       # الدالة الأساسية ال
     # page.window.left = 960                # تحديد مسافة ظهور النافذة من يسار الشاشة
 
     # بداية كود الكشاف
-    flashlight = Flashlight()       # بدون استدعاء المكتبة فى الاعلى
-    page.overlay.append(flashlight)
+    # flashlight = Flashlight()       # بدون استدعاء المكتبة فى الاعلى
+    # page.overlay.append(flashlight)
     # نهاية كود الكشاف
 
     def turn_on(e):
-        flashlight.turn_on()  # 📱 أندرويد سيطلب إذن الكاميرا تلقائيًا عند أول استخدام
+        if flashlight:
+            try:
+                flashlight.on()
+            except Exception:
+                pass  # يتجاهل الأخطاء الصامتة في بيئة المحاكاة
         page.update()
 
     def turn_off(e):
-        flashlight.turn_off()
+        if flashlight:
+            try:
+                flashlight.off()
+            except Exception:
+                pass
         page.update()
 
     # ✅ دالة آمنة للأندرويد بدل window_close()
