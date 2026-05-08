@@ -6,12 +6,12 @@ build:
   android:
     permissions:
       - CAMERA
-    # هنا يتم وضع المكتبات التي تسبب خطأ Unknown Control
-    dependencies:
-      - flet-flashlight
-      - flet-permission-handler
+    # ✅ التعديل هنا: استخدم "packages" بدلاً من "dependencies" لضمان الدمج
+    packages:
+      - flet_flashlight
+      - flet_permission_handler
 
-# تكرارها هنا لضمان التعرف عليها في بيئة بايثون
+# الاعتماديات العامة لمكتبة بايثون
 dependencies:
   - flet-flashlight
   - flet-permission-handler
