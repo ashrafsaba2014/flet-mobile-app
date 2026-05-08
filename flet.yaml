@@ -1,54 +1,12 @@
-name: Build Flet Android APK
+app:
+  name: "Ashraf Flash"
+  package: "com.ashraf.flashlight"
 
-on:
-  push:
-    branches: [main, master]
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.22.0' # إصدار أكثر استقراراً لعمليات البناء الآلية
-          cache: true
-
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install flet flet-cli flet-flashlight flet-permission-handler
-
-      - name: Build APK
-        run: |
-          # تنظيف أي بناء قديم لضمان بداية جديدة
-          rm -rf build dist
-          yes | flet build apk --module-name app
-
-      - name: Locate APK File
-        # هذه الخطوة ستطبع مكان الملف بالضبط في السجلات لتراه بعينك
-        run: |
-          echo "Searching for APK files..."
-          find . -name "*.apk"
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Flashlight-App-Release
-          # سنرفع مجلد build بالكامل إذا فشل العثور على الملف الفردي
-          path: |
-            build/apk/*.apk
-            dist/*.apk
-            ./*.apk
-          if-no-files-found: warn
+build:
+  android:
+    permissions:
+      - CAMERA
+    # 💡 هنا السر: كتابة المكتبات هنا تجبر GitHub على حشر كود الـ Java داخل الـ APK
+    requirements:
+      - flet-flashlight
+      - flet-permission-handler
