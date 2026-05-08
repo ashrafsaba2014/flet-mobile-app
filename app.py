@@ -1,9 +1,112 @@
-import flet as ft
-def main(page: ft.Page):
-    page.title = "تجربة أندرويد"
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.add(ft.Text("Ashraf Helmy", size=30, color="blue", weight=ft.FontWeight.BOLD))
+# apk هذا التطبيق لا تجربه عل الويندوز لانه لن يعمل ولابد من تحويله الى
+# ثم نقله الى الموبايل
+# pip install flet --upgrade
+# pip install flashlight                # from the terminal
+# pip install flet-flashlight
+# flet build apk --include-packages flet_flashlight,flet_permission_handler     # apk
+# flet build apk --module-name mobile_flash_on
+
+from flet import *                      # استيراد جميع أدوات مكتبة Flet لبناء الواجهة
+from flet_flashlight import Flashlight
+# يجب تثبيت:     pip install flet-permission-handler
+from flet_permission_handler import PermissionHandler, PermissionGroup
+
+def main(page: Page):                   # الدالة الأساسية التي يبدأ منها التطبيق وتتحكم في الصفحة
+    page.title = "Ashraf Mobile Flash ..."   # تحديد نص عنوان نافذة التطبيق
+    page.scroll = 'auto'
+    page.window.height = 740            # تحديد طول نافذة التطبيق بالبكسل
+    page.window.width = 390             # تحديد عرض نافذة التطبيق (مناسب لحجم الموبايل)
+    page.window.top = 1               # تحديد مسافة ظهور النافذة من أعلى الشاشة
+    page.window.left = 960
+    page.theme_mode = ThemeMode.LIGHT
+
+    # بداية كود الكشاف
+    flashlight = Flashlight()       # بدون استدعاء المكتبة فى الاعلى
+    page.overlay.append(flashlight)
+    # نهاية كود الكشاف
+
+    # settings زر الاعدادات
+    my_permission_handler = PermissionHandler()
+    page.overlay.append(my_permission_handler)
+    # settings زر الاعدادات
+
+    def check_permissions_and_on(e):
+        # طلب إذن الكاميرا (الفلاش جزء منها في الأندرويد)
+        # ملاحظة: في الكود الفعلي للأندرويد يفضل استخدام await مع الدوال المتزامنة
+        my_permission_handler.request_permission(PermissionGroup.CAMERA)
+        flashlight.turn_on()
+        page.update()
+
+    def open_settings(e):
+        my_permission_handler.open_app_settings()
+
+    page.add(
+        AppBar(
+            title=Text("Flash Light"),
+            color=Colors.WHITE,
+            bgcolor=Colors.RED,
+            actions=[  # اضافة ايقونات او ازرار لها احداث
+                IconButton(Icons.SETTINGS,on_click = open_settings),
+                PopupMenuButton(
+                    items=[
+                        PopupMenuItem('إعدادات التطبيق'),
+                        PopupMenuItem('من نحن'),
+                        PopupMenuItem(),  # اضافة فاصل
+                        PopupMenuItem('إغلاق التطبيق', on_click=lambda _: page.window_close()),
+                    ]
+                )
+            ]
+        ),
+        Row(
+            controls=[
+                Text('\n\nFlash Light App',size=31,color=Colors.BLACK),
+            ],
+            alignment=MainAxisAlignment.CENTER  # هذا السطر يوسط العناصر داخل الصف
+        ),
+        Row(
+            controls=[
+                Image(src='logof.png', width=360)
+            ],
+            alignment=MainAxisAlignment.CENTER  # هذا السطر يوسط العناصر داخل الصف
+        ),
+        Row(
+            controls=[
+                Button(
+                    'ON',
+                    width=100,
+                    color='white',
+                    icon=Icons.PLAY_ARROW,
+                    style=ButtonStyle(
+                        bgcolor=Colors.GREEN,
+                        color=Colors.WHITE,
+                        padding=15,
+                        shape=ContinuousRectangleBorder(radius=100),
+                    ),
+                    on_click=check_permissions_and_on
+                ),
+                Button(
+                    'OFF',
+                    width=100,
+                    color='white',
+                    icon=Icons.PLAY_DISABLED_SHARP,
+                    style=ButtonStyle(
+                        bgcolor=Colors.RED,
+                        color=Colors.WHITE,
+                        padding=15,
+                        shape=ContinuousRectangleBorder(radius=100),
+                    ),
+                    on_click = lambda _: flashlight.turn_off()
+                )
+            ],
+            alignment=MainAxisAlignment.CENTER  # هذا السطر يوسط العناصر داخل الصف
+        ),
+        Row(
+            controls=[
+                Text('\n\nAshraf Flash Light App 2026', size=14, color=Colors.BLACK),
+            ],
+            alignment=MainAxisAlignment.CENTER  # هذا السطر يوسط العناصر داخل الصف
+        ),
+    )
 
 if __name__ == "__main__":
-    ft.run(main)
+    run(main, assets_dir="assets")
