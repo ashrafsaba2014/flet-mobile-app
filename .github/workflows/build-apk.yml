@@ -25,23 +25,16 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install flet flet-cli flet-flashlight flet-permission-handler
+          python -m pip install --upgrade pip
+          pip install flet flet-cli
 
-      - name: Build APK (Detailed Mode)
-        # أضفنا --verbose لرؤية تفاصيل الخطوات في سجلات GitHub
+      - name: Build APK
         run: |
-          yes | flet build apk --module-name app --verbose
-
-      - name: Locate and Move APK
-        # سنقوم بالبحث عن الملف ونقله لمجلد واضح في الجذور لضمان الرفع
-        run: |
-          mkdir -p output
-          find . -name "*.apk" -exec cp {} output/ \;
-          ls -R output
+          # أمر البناء البسيط والمباشر
+          yes | flet build apk --module-name app
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Flashlight-App-New
-          path: output/*.apk
-          if-no-files-found: error
+          name: Flashlight-App-Clean
+          path: "**/*.apk"
