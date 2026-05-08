@@ -1,30 +1,17 @@
-# ═══════════════════════════════════════════════════════════════
-# 📱 ملف إعدادات بناء تطبيق أندرويد باستخدام Flet CLI
-# 📍 ضعه في نفس مجلد ملف البايثون الرئيسي (app_before_update.py)
-# ═══════════════════════════════════════════════════════════════
-
 app:
-  name: "Ashraf Flash Light"          # 📌 الاسم الداخلي للتطبيق
-  title: "Ashraf Helmy Flash"               # 📌 العنوان الذي يظهر تحت الأيقونة على الشاشة
-  description: "تطبيق كشاف"  # 📝 وصف التطبيق
-  version: "1.0.0"                    # 🔢 إصدار التطبيق (يظهر للمستخدم)
-  package: "com.ashraf.flashlight"      # 📦 اسم الحزمة الفريد (يجب أن يكون بترتيب عكسي مثل دومين)
+  name: "Ashraf Flash Light"
+  package: "com.ashraf.flashlight"
 
 build:
   android:
     permissions:
       - CAMERA
-    features:
-      - android.hardware.camera
-      - android.hardware.camera.flash
+    # ✅ إضافة المتطلبات هنا تجبر المعالج على دمج الكود الخاص بها
+    requirements:
+      - flet-flashlight
+      - flet-permission-handler
 
-
-      # 🎨 موارد الواجهة (اختياري لكن مُنصح بشدة)
-    icon: "assets/icon.png"         # 🖼️ أيقونة التطبيق (512x512 PNG شفاف الخلفية)
-    # splash: "assets/splash.png"   # 🌅 شاشة البداية (اختياري، يُنصح بحجم 1080x1920)
-
-# ✅ قسم إضافي لتحديد الحزم الخارجية المطلوبة
-# هذا يضمن تثبيتها تلقائيًا أثناء البناء على GitHub
+# ✅ إضافة الاعتماديات بشكل عام أيضاً
 dependencies:
   - flet-flashlight
   - flet-permission-handler
