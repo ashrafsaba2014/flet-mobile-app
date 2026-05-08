@@ -1,54 +1,46 @@
 from flet import *
+import os
 
 def main(page: Page):
     page.title = "Ashraf Flashlight"
     page.theme_mode = ThemeMode.LIGHT
     page.horizontal_alignment = CrossAxisAlignment.CENTER
-    
-    # استيراد الإضافات داخل دالة main لضمان عدم انهيار التطبيق عند الفتح
-    try:
-        from flet_flashlight import Flashlight
-        from flet_permission_handler import PermissionHandler, Permission
-        
-        flash = Flashlight()
-        ph = PermissionHandler()
-        page.overlay.extend([flash, ph])
-        HAS_EXT = True
-    except:
-        HAS_EXT = False
+    page.vertical_alignment = MainAxisAlignment.CENTER
+
+    def set_flashlight(status):
+        # status: 1 للتشغيل، 0 للإطفاء
+        try:
+            # محاولة تشغيل الكشاف عبر أوامر النظام في أندرويد
+            os.system(f"cmd notification post -S flash {status}")
+            # طريقة ثانية لضمان العمل على إصدارات مختلفة
+            os.system(f"service call flashlight {status+1}") 
+        except:
+            pass
 
     def turn_on(e):
-        if HAS_EXT:
-            ph.request_permission(Permission.CAMERA)
-            flash.turn_on()
-            page.snack_bar = SnackBar(Text("🔦 ON"))
-            page.snack_bar.open = True
-        else:
-            page.snack_bar = SnackBar(Text("⚠️ الإضافة غير مدمجة بشكل صحيح"))
-            page.snack_bar.open = True
+        set_flashlight(1)
+        page.snack_bar = SnackBar(Text("🔦 تم إرسال أمر التشغيل"))
+        page.snack_bar.open = True
         page.update()
 
     def turn_off(e):
-        if HAS_EXT:
-            flash.turn_off()
+        set_flashlight(0)
+        page.snack_bar = SnackBar(Text("🔦 تم إرسال أمر الإيقاف"))
+        page.snack_bar.open = True
         page.update()
 
     page.add(
-        AppBar(title=Text("Flash Light"), bgcolor=colors.RED, color=colors.WHITE),
-        Column(
-            horizontal_alignment=CrossAxisAlignment.CENTER,
+        AppBar(title=Text("Ashraf Flashlight"), bgcolor=colors.RED, color=colors.WHITE),
+        Text("Flashlight App", size=30, weight="bold"),
+        Image(src="logof.png", width=300),
+        Row(
+            alignment=MainAxisAlignment.CENTER,
             controls=[
-                Text("\nFlash Light App", size=30, weight="bold"),
-                Image(src="logof.png", width=300),
-                Row(
-                    alignment=MainAxisAlignment.CENTER,
-                    controls=[
-                        ElevatedButton("ON", on_click=turn_on, bgcolor=colors.GREEN, color=colors.WHITE),
-                        ElevatedButton("OFF", on_click=turn_off, bgcolor=colors.RED, color=colors.WHITE),
-                    ]
-                )
+                ElevatedButton("ON", on_click=turn_on, bgcolor=colors.GREEN, color=colors.WHITE, width=120),
+                ElevatedButton("OFF", on_click=turn_off, bgcolor=colors.RED, color=colors.WHITE, width=120),
             ]
-        )
+        ),
+        Text("\nAshraf Flash Light App 2026", size=14)
     )
 
 if __name__ == "__main__":
