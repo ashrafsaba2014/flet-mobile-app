@@ -6,12 +6,12 @@ build:
   android:
     permissions:
       - CAMERA
-    # ✅ إضافة المتطلبات هنا تجبر المعالج على دمج الكود الخاص بها
-    requirements:
+    # هنا يتم وضع المكتبات التي تسبب خطأ Unknown Control
+    dependencies:
       - flet-flashlight
       - flet-permission-handler
 
-# ✅ إضافة الاعتماديات بشكل عام أيضاً
+# تكرارها هنا لضمان التعرف عليها في بيئة بايثون
 dependencies:
   - flet-flashlight
   - flet-permission-handler
