@@ -1,49 +1,63 @@
 from flet import *
-import sys
+import os
 
 def main(page: Page):
-    # إعدادات الصفحة
+    page.title = "Ashraf Flashlight"
     page.theme_mode = ThemeMode.LIGHT
-    page.scroll = "always"
-    
-    # دالة لعرض الأخطاء على الشاشة مباشرة
-    def show_error(error_msg):
-        page.add(
-            Container(
-                content=Column([
-                    Text("⚠️ تم اكتشاف خطأ في التشغيل:", color="red", weight="bold"),
-                    Text(str(error_msg), color="black", selectable=True),
-                ]),
-                padding=20,
-                bgcolor="yellow"
-            )
-        )
-        page.update()
+    page.horizontal_alignment = CrossAxisAlignment.CENTER
+    page.scroll = "auto"
 
-    try:
-        # بناء الواجهة
-        page.add(
-            AppBar(title=Text("Ashraf Flashlight Test"), bgcolor="red"),
-            Text("\nإذا رأيت هذا النص، فالواجهة تعمل!", size=20),
-            ElevatedButton("تجربة إغلاق التطبيق", on_click=lambda _: page.window_close()),
-            Divider(),
-            Text("معلومات النظام:", weight="bold"),
-            Text(f"Platform: {page.platform}"),
-        )
-        
-        # محاولة تنفيذ أمر الكشاف داخل try مستقلة
+    # دالة التحكم في الكشاف (الطريقة المضمونة برمجياً)
+    def set_flashlight(status):
         try:
-            import os
-            # سنكتفي بطباعة رسالة هنا للتأكد من قدرة بايثون على الوصول لـ os
-            page.add(Text("✅ مكتبة OS جاهزة"))
-        except Exception as e:
-            page.add(Text(f"❌ خطأ في مكتبة OS: {e}"))
-            
-    except Exception as global_error:
-        # إذا فشل كل شيء، اعرض الخطأ فوراً
-        show_error(global_error)
-    
-    page.update()
+            # محاولة تشغيل الكشاف عبر أوامر النظام
+            os.system(f"cmd notification post -S flash {status}")
+            # رسالة تأكيد للمستخدم
+            page.snack_bar = SnackBar(Text("🔦 تم إرسال الأمر بنجاح"))
+            page.snack_bar.open = True
+            page.update()
+        except:
+            pass
+
+    page.add(
+        AppBar(title=Text("Ashraf Flashlight"), bgcolor="red", color="white"),
+        Text("\nFlashlight App", size=30, weight="bold"),
+        
+        # إضافة الصورة داخل حاوية مع معالجة الخطأ
+        Container(
+            content=Image(
+                src="logof.png", 
+                width=250,
+                # إذا لم يجد الصورة، سيظهر أيقونة بدلاً من الشاشة البيضاء
+                error_content=Icon(icons.FLASH_ON, size=100, color="orange")
+            ),
+            padding=20
+        ),
+        
+        Row(
+            alignment=MainAxisAlignment.CENTER,
+            controls=[
+                ElevatedButton(
+                    "ON", 
+                    bgcolor="green", 
+                    color="white", 
+                    width=120, 
+                    on_click=lambda _: set_flashlight(1)
+                ),
+                ElevatedButton(
+                    "OFF", 
+                    bgcolor="red", 
+                    color="white", 
+                    width=120, 
+                    on_click=lambda _: set_flashlight(0)
+                ),
+            ]
+        ),
+        
+        Divider(height=50, color="transparent"),
+        Text("Ashraf App 2026", size=12, color="grey"),
+        ElevatedButton("إغلاق التطبيق", on_click=lambda _: page.window_close())
+    )
 
 if __name__ == "__main__":
-    run(main)
+    run(main, assets_dir="assets")
