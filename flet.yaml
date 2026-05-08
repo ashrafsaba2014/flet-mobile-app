@@ -1,11 +1,6 @@
 app:
-  name: "Ashraf Flash"
-  package: "com.ashraf.flashlight"
-
-# تأكد أن هذا الجزء موجود لضمان ظهور العناصر
-assets:
-  path: assets
-
+  name: "Ashraf Test"
+  package: "com.ashraf.test"
 build:
   android:
     permissions:
