@@ -1,14 +1,11 @@
 app:
   name: "AshrafFlash"
-  package: "com.ashraf.final.light" # تغيير الاسم يضمن تثبيت نظيف بعيداً عن أخطاء النسخ السابقة
+  package: "com.ashraf.final.light"
 
 build:
   android:
-    # الأذونات الأساسية فقط
     permissions:
       - CAMERA
-    # تحديد رقم الإصدار لضمان قبول الأندرويد للملف
-    version_code: 1
-    version_name: "1.0.0"
-
-# حذفنا قسم الـ assets والـ dependencies الخارجية تماماً لضمان عدم وجود "شاشة بيضاء"
+    # إضافة هذه التبعية هنا هي التي تجعل الأزرار "تتكلم" مع الهاردوير
+    dependencies:
+      - flet_flashlight
