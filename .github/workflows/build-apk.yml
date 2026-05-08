@@ -11,9 +11,9 @@ jobs:
           python-version: '3.11'
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0' # 👈 نسخة مستقرة جداً لـ Flet
+          flutter-version: '3.19.0' # 👈 نسخة مستقرة جداً لـ Flet      
       - run: |
-          pip install flet==0.21.2 # 👈 نسخة محددة لضمان التوافق
+          pip install flet==0.21.2 flet-flashlight flet-permission-handler
           flet build apk --module-name app
       - uses: actions/upload-artifact@v4
         with:
