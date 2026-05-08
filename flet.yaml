@@ -6,7 +6,3 @@ build:
   android:
     permissions:
       - CAMERA
-    # 💡 هنا السر: كتابة المكتبات هنا تجبر GitHub على حشر كود الـ Java داخل الـ APK
-    requirements:
-      - flet-flashlight
-      - flet-permission-handler
