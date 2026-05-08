@@ -12,10 +12,14 @@
 
 
 from flet import *                          # استيراد جميع أدوات مكتبة Flet لبناء الواجهة
+# ✅ استيراد آمن: لن يسبب crash إذا كانت المكتبة غير متوفرة
+# pip install plyer
 try:
-    from plyer import flashlight  # ✅ مكتبة قياسية للعتاد بدون واجهة
-except ImportError:
-    flashlight = None
+    from plyer import flashlight as hw_flashlight
+    HAS_HARDWARE = True
+except Exception:
+    hw_flashlight = None
+    HAS_HARDWARE = False
 # from flet_flashlight import Flashlight
 # يجب تثبيت:     pip install flet-permission-handler
 # from flet_permission_handler import PermissionHandler  # ✅ إزالة PermissionGroup
@@ -38,19 +42,21 @@ def main(page: Page):                       # الدالة الأساسية ال
     # نهاية كود الكشاف
 
     def turn_on(e):
-        if flashlight:
+        if HAS_HARDWARE:
             try:
-                flashlight.on()
+                hw_flashlight.on()
             except Exception:
-                pass  # يتجاهل الأخطاء الصامتة في بيئة المحاكاة
+                pass
+        page.show_snack_bar(SnackBar(content=Text("🔦 تشغيل الكشاف...")))
         page.update()
 
     def turn_off(e):
-        if flashlight:
+        if HAS_HARDWARE:
             try:
-                flashlight.off()
+                hw_flashlight.off()
             except Exception:
                 pass
+        page.show_snack_bar(SnackBar(content=Text("🔦 إيقاف الكشاف...")))
         page.update()
 
     # ✅ دالة آمنة للأندرويد بدل window_close()
