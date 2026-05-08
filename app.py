@@ -6,26 +6,34 @@ def main(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-    # محاولة استيراد الإضافة داخلياً
+    # Safe import for the native extensions
     try:
         from flet_flashlight import Flashlight
+        from flet_permission_handler import PermissionHandler, Permission
+        
         flash = Flashlight()
-        page.overlay.append(flash)
-        has_flash = True
+        ph = PermissionHandler()
+        page.overlay.extend([flash, ph])
+        has_ext = True
     except:
-        has_flash = False
+        has_ext = False
 
     def toggle_on(e):
-        if has_flash:
+        if has_ext:
+            # Explicitly request permission before turning on
+            status = ph.request_permission(Permission.CAMERA)
             flash.turn_on()
-            page.snack_bar = ft.SnackBar(ft.Text("🔦 ON"))
+            page.snack_bar = ft.SnackBar(ft.Text("🔦 Flashlight ON"))
             page.snack_bar.open = True
-            page.update()
+        else:
+            page.snack_bar = ft.SnackBar(ft.Text("⚠️ Extension Missing"))
+            page.snack_bar.open = True
+        page.update()
 
     def toggle_off(e):
-        if has_flash:
+        if has_ext:
             flash.turn_off()
-            page.update()
+        page.update()
 
     page.add(
         ft.Icon(ft.icons.FLASHLIGHT_ON, size=80, color=ft.colors.AMBER),
