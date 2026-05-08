@@ -14,7 +14,7 @@
 from flet import *                          # استيراد جميع أدوات مكتبة Flet لبناء الواجهة
 from flet_flashlight import Flashlight
 # يجب تثبيت:     pip install flet-permission-handler
-from flet_permission_handler import PermissionHandler  # ✅ إزالة PermissionGroup
+# from flet_permission_handler import PermissionHandler  # ✅ إزالة PermissionGroup
 
 def main(page: Page):                       # الدالة الأساسية التي يبدأ منها التطبيق وتتحكم في الصفحة
     page.title = "Ashraf Mobile Flash"      # تحديد نص عنوان نافذة التطبيق
@@ -33,21 +33,13 @@ def main(page: Page):                       # الدالة الأساسية ال
     page.overlay.append(flashlight)
     # نهاية كود الكشاف
 
-    # settings زر الاعدادات
-    my_permission_handler = PermissionHandler()
-    page.overlay.append(my_permission_handler)
-    # settings زر الاعدادات
-
-    def check_permissions_and_on(e):
-        # طلب إذن الكاميرا (الفلاش جزء منها في الأندرويد)
-        # ملاحظة: في الكود الفعلي للأندرويد يفضل استخدام await مع الدوال المتزامنة
-        # my_permission_handler.request_permission(PermissionGroup.CAMERA)
-        my_permission_handler.request_permission("camera")  # ✅ النص هو الطريقة المعتمدة حاليًا
-        flashlight.turn_on()
+    def turn_on(e):
+        flashlight.turn_on()  # 📱 أندرويد سيطلب إذن الكاميرا تلقائيًا عند أول استخدام
         page.update()
 
-    def open_settings(e):
-        my_permission_handler.open_app_settings()
+    def turn_off(e):
+        flashlight.turn_off()
+        page.update()
 
     # ✅ دالة آمنة للأندرويد بدل window_close()
     def show_exit_confirm(e):
@@ -62,13 +54,29 @@ def main(page: Page):                       # الدالة الأساسية ال
             )
         )
 
+    # settings زر الاعدادات
+    # my_permission_handler = PermissionHandler()
+    # page.overlay.append(my_permission_handler)
+    # settings زر الاعدادات
+
+    # def check_permissions_and_on(e):
+    #     # طلب إذن الكاميرا (الفلاش جزء منها في الأندرويد)
+    #     # ملاحظة: في الكود الفعلي للأندرويد يفضل استخدام await مع الدوال المتزامنة
+    #     # my_permission_handler.request_permission(PermissionGroup.CAMERA)
+    #     my_permission_handler.request_permission("camera")  # ✅ النص هو الطريقة المعتمدة حاليًا
+    #     flashlight.turn_on()
+    #     page.update()
+
+    # def open_settings(e):
+    #     my_permission_handler.open_app_settings()
+
     page.add(
         AppBar(
             title=Text("Flash Light"),
             color=Colors.WHITE,
             bgcolor=Colors.RED,
             actions=[  # اضافة ايقونات او ازرار لها احداث
-                IconButton(Icons.SETTINGS,on_click = open_settings),
+                # IconButton(Icons.SETTINGS,on_click = open_settings),
                 PopupMenuButton(
                     items=[
                         PopupMenuItem('إعدادات التطبيق'),
@@ -100,7 +108,7 @@ def main(page: Page):                       # الدالة الأساسية ال
                         padding=15,
                         shape=ContinuousRectangleBorder(radius=100),
                     ),
-                    on_click=check_permissions_and_on
+                    on_click=turn_on
                 ),
                 Button(
                     'OFF',
@@ -113,7 +121,7 @@ def main(page: Page):                       # الدالة الأساسية ال
                         padding=15,
                         shape=ContinuousRectangleBorder(radius=100),
                     ),
-                    on_click = lambda _: flashlight.turn_off()
+                    on_click=turn_off
                 )
             ],
             alignment=MainAxisAlignment.CENTER  # هذا السطر يوسط العناصر داخل الصف
