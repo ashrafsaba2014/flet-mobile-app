@@ -1,78 +1,52 @@
 from flet import *
-from flet_flashlight import Flashlight
-from flet_permission_handler import PermissionHandler, Permission
 
 def main(page: Page):
-    page.title = "Ashraf Mobile Flash"
+    page.title = "Ashraf Flashlight"
     page.theme_mode = ThemeMode.LIGHT
     page.horizontal_alignment = CrossAxisAlignment.CENTER
-
-    # ✅ تعريف الكشاف ومدير الصلاحيات في الـ overlay
-    flashlight = Flashlight()
-    ph = PermissionHandler()
-    page.overlay.extend([flashlight, ph])
+    
+    # استيراد الإضافات داخل دالة main لضمان عدم انهيار التطبيق عند الفتح
+    try:
+        from flet_flashlight import Flashlight
+        from flet_permission_handler import PermissionHandler, Permission
+        
+        flash = Flashlight()
+        ph = PermissionHandler()
+        page.overlay.extend([flash, ph])
+        HAS_EXT = True
+    except:
+        HAS_EXT = False
 
     def turn_on(e):
-        try:
-            # ✅ طلب الإذن بطريقة أكثر أماناً
+        if HAS_EXT:
             ph.request_permission(Permission.CAMERA)
-            flashlight.turn_on()
-            page.snack_bar = SnackBar(content=Text("🔦 تم تشغيل الكشاف"))
+            flash.turn_on()
+            page.snack_bar = SnackBar(Text("🔦 ON"))
             page.snack_bar.open = True
-        except Exception as ex:
-            page.snack_bar = SnackBar(content=Text(f"خطأ: {ex}"))
+        else:
+            page.snack_bar = SnackBar(Text("⚠️ الإضافة غير مدمجة بشكل صحيح"))
             page.snack_bar.open = True
         page.update()
 
     def turn_off(e):
-        flashlight.turn_off()
-        page.snack_bar = SnackBar(content=Text("🔦 تم إيقاف الكشاف"))
-        page.snack_bar.open = True
+        if HAS_EXT:
+            flash.turn_off()
         page.update()
 
-    def show_exit_confirm(e):
-        # ✅ تصحيح إغلاق التطبيق في الأندرويد
-        def close_app(e):
-            page.window_close() # الطريقة الصحيحة لـ Flet
-
-        page.dialog = AlertDialog(
-            title=Text("خروج"),
-            content=Text("هل تريد إغلاق التطبيق؟"),
-            actions=[
-                TextButton("لا", on_click = lambda _: page.close(page.dialog)),
-                TextButton("نعم", on_click=close_app),
-            ],
-        )
-        page.dialog.open = True
-        page.update()
-
-    # --- واجهة المستخدم (نفس تصميمك مع تعديل بسيط للأزرار) ---
     page.add(
-        AppBar(
-            title=Text("Flash Light"),
-            bgcolor=colors.RED,
-            color=colors.WHITE,
-            actions=[
-                PopupMenuButton(
-                    items=[
-                        PopupMenuItem(text="إغلاق التطبيق", on_click=show_exit_confirm),
-                    ]
-                )
-            ]
-        ),
+        AppBar(title=Text("Flash Light"), bgcolor=colors.RED, color=colors.WHITE),
         Column(
             horizontal_alignment=CrossAxisAlignment.CENTER,
             controls=[
-                Text("\nFlash Light App", size=31, weight="bold"),
-                Image(src="logof.png", width=360),
+                Text("\nFlash Light App", size=30, weight="bold"),
+                Image(src="logof.png", width=300),
                 Row(
                     alignment=MainAxisAlignment.CENTER,
                     controls=[
-                        ElevatedButton("ON", bgcolor=colors.GREEN, color=colors.WHITE, on_click=turn_on, width=120),
-                        ElevatedButton("OFF", bgcolor=colors.RED, color=colors.WHITE, on_click=turn_off, width=120),
+                        ElevatedButton("ON", on_click=turn_on, bgcolor=colors.GREEN, color=colors.WHITE),
+                        ElevatedButton("OFF", on_click=turn_off, bgcolor=colors.RED, color=colors.WHITE),
                     ]
-                ),
-                Text("\nAshraf Flash Light App 2026", size=14)
+                )
             ]
         )
     )
