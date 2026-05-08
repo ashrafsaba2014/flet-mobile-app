@@ -12,18 +12,13 @@ app:
 
 build:
   android:
-    min_sdk_version: 21             # 📱 أقل إصدار أندرويد مدعوم (Android 5.0)
-    target_sdk_version: 34          # 🎯 الإصدار المستهدف (مطابق لـ compile)
-    version_code: 1                 # 🔢 رقم الإصدار الداخلي (يجب زيادته عند كل رفع لـ Google Play)
-    
-    # 🔓 الأذونات المطلوبة (أضف أو احذف حسب احتياجك)
     permissions:
-      - CAMERA                      # ✅ إذن الكاميرا ضروري للفلاش
-      # - ACCESS_FINE_LOCATION      # 📍 الموقع الدقيق
-      # - CAMERA                    # 📷 الكاميرا
-      # - READ_EXTERNAL_STORAGE     # 📂 قراءة التخزين (لأندرويد < 13)
-      # - INTERNET                    # ✅ ضروري لأي اتصال بالشبكة أو تحميل خطوط
-    
+      - CAMERA
+    features:
+      - android.hardware.camera
+      - android.hardware.camera.flash
+
+
       # 🎨 موارد الواجهة (اختياري لكن مُنصح بشدة)
     icon: "assets/icon.png"         # 🖼️ أيقونة التطبيق (512x512 PNG شفاف الخلفية)
     # splash: "assets/splash.png"   # 🌅 شاشة البداية (اختياري، يُنصح بحجم 1080x1920)
