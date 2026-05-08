@@ -1,39 +1,35 @@
 from flet import *
 
 def main(page: Page):
-    page.title = "Ashraf Flashlight"
+    # إعدادات لضمان التشغيل الفوري
     page.theme_mode = ThemeMode.LIGHT
-    page.vertical_alignment = MainAxisAlignment.CENTER
-    page.horizontal_alignment = CrossAxisAlignment.CENTER
-
-    # دالة التحكم (بسيطة جداً لاختبار الواجهة أولاً)
-    def toggle_flash(e):
+    
+    def set_flash(status):
         import os
-        status = "1" if e.control.text == "ON" else "0"
         try:
-            # تنفيذ الأمر داخل try لضمان عدم توقف البرنامج إذا رفض الهاتف الأمر
             os.system(f"cmd notification post -S flash {status}")
-            page.snack_bar = SnackBar(Text(f"تم إرسال أمر {e.control.text}"))
-            page.snack_bar.open = True
-        except Exception as ex:
-            print(f"Error: {ex}")
+        except:
+            pass
+        page.snack_bar = SnackBar(Text(f"Command sent: {status}"))
+        page.snack_bar.open = True
         page.update()
 
-    # إضافة العناصر مباشرة بدون حاويات معقدة
+    # بناء الواجهة بنفس الطريقة التي نجحت في الصورة السابقة
     page.add(
-        AppBar(title=Text("Ashraf Flashlight"), bgcolor="red", color="white"),
-        Icon(icons.FLASH_ON, size=100, color="amber"),
-        Text("تطبيق الكشاف", size=25, weight="bold"),
-        Divider(height=20, color="transparent"),
+        AppBar(title=Text("Ashraf Flashlight"), bgcolor="red"),
+        Text("\nتطبيق الكشاف يعمل الآن", size=25, weight="bold"),
+        Icon(icons.FLASHLIGHT_ON, size=100, color="orange"),
         Row(
             alignment=MainAxisAlignment.CENTER,
             controls=[
-                ElevatedButton("ON", bgcolor="green", color="white", on_click=toggle_flash),
-                ElevatedButton("OFF", bgcolor="red", color="white", on_click=toggle_flash),
+                ElevatedButton("ON", on_click=lambda _: set_flash(1), bgcolor="green", color="white"),
+                ElevatedButton("OFF", on_click=lambda _: set_flash(0), bgcolor="red", color="white"),
             ]
         ),
-        Text("\nAshraf App 2026", size=12, color="grey")
+        Text("\nAshraf App 2026", size=12),
+        ElevatedButton("إغلاق", on_click=lambda _: page.window_close())
     )
+    page.update()
 
 if __name__ == "__main__":
     run(main)
