@@ -4,15 +4,14 @@
 # ═══════════════════════════════════════════════════════════════
 
 app:
-  name: "Ashraf Helmy App"          # 📌 الاسم الداخلي للتطبيق
-  title: "Ashraf Helmy"               # 📌 العنوان الذي يظهر تحت الأيقونة على الشاشة
-  description: "تطبيق كشاف احترافي"  # 📝 وصف التطبيق
+  name: "Ashraf Flash Light"          # 📌 الاسم الداخلي للتطبيق
+  title: "Ashraf Helmy Flash"               # 📌 العنوان الذي يظهر تحت الأيقونة على الشاشة
+  description: "تطبيق كشاف"  # 📝 وصف التطبيق
   version: "1.0.0"                    # 🔢 إصدار التطبيق (يظهر للمستخدم)
   package: "com.ashraf.flashlight"      # 📦 اسم الحزمة الفريد (يجب أن يكون بترتيب عكسي مثل دومين)
 
 build:
   android:
-    compile_sdk_version: 34         # ⚙️ إصدار SDK المستخدم في التجميع
     min_sdk_version: 21             # 📱 أقل إصدار أندرويد مدعوم (Android 5.0)
     target_sdk_version: 34          # 🎯 الإصدار المستهدف (مطابق لـ compile)
     version_code: 1                 # 🔢 رقم الإصدار الداخلي (يجب زيادته عند كل رفع لـ Google Play)
