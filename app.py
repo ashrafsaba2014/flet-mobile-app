@@ -1,157 +1,77 @@
-# apk هذا التطبيق لا تجربه عل الويندوز لانه لن يعمل ولابد من تحويله الى
-# ثم نقله الى الموبايل
+from flet import *
+from flet_flashlight import Flashlight
+from flet_permission_handler import PermissionHandler, Permission
 
-# 📱 تطبيق الكشاف - نسخة أندرويد جاهزة للبناء على GitHub Actions
-# pip install flet flet-flashlight flet-permission-handler
-
-# pip install flet --upgrade
-# pip install flashlight                # from the terminal
-# pip install flet-flashlight
-# flet build apk --include-packages flet_flashlight,flet_permission_handler     # apk
-# flet build apk --module-name mobile_flash_on
-
-
-from flet import *                          # استيراد جميع أدوات مكتبة Flet لبناء الواجهة
-# ✅ استيراد آمن: لن يسبب crash إذا كانت المكتبة غير متوفرة
-# pip install plyer
-try:
-    from plyer import flashlight as hw_flashlight
-    HAS_HARDWARE = True
-except Exception:
-    hw_flashlight = None
-    HAS_HARDWARE = False
-# from flet_flashlight import Flashlight
-# يجب تثبيت:     pip install flet-permission-handler
-# from flet_permission_handler import PermissionHandler  # ✅ إزالة PermissionGroup
-
-def main(page: Page):                       # الدالة الأساسية التي يبدأ منها التطبيق وتتحكم في الصفحة
-    page.title = "Ashraf Mobile Flash"      # تحديد نص عنوان نافذة التطبيق
-    page.scroll = 'auto'
+def main(page: Page):
+    page.title = "Ashraf Mobile Flash"
     page.theme_mode = ThemeMode.LIGHT
-    page.horizontal_alignment = CrossAxisAlignment.CENTER  # ✅ لضبط المحاذاة على الموبايل
+    page.horizontal_alignment = CrossAxisAlignment.CENTER
 
-    # 📱 إزالة خصائص النافذة الخاصة بالديسكتوب (تسبب مشاكل على الأندرويد)
-    # page.window.height = 740              # تحديد طول نافذة التطبيق بالبكسل
-    # page.window.width = 390               # تحديد عرض نافذة التطبيق (مناسب لحجم الموبايل)
-    # page.window.top = 1                   # تحديد مسافة ظهور النافذة من أعلى الشاشة
-    # page.window.left = 960                # تحديد مسافة ظهور النافذة من يسار الشاشة
-
-    # بداية كود الكشاف
-    # flashlight = Flashlight()       # بدون استدعاء المكتبة فى الاعلى
-    # page.overlay.append(flashlight)
-    # نهاية كود الكشاف
+    # ✅ تعريف الكشاف ومدير الصلاحيات في الـ overlay
+    flashlight = Flashlight()
+    ph = PermissionHandler()
+    page.overlay.extend([flashlight, ph])
 
     def turn_on(e):
-        if HAS_HARDWARE:
-            try:
-                hw_flashlight.on()
-            except Exception:
-                pass
-        page.show_snack_bar(SnackBar(content=Text("🔦 تشغيل الكشاف...")))
+        # ✅ طلب الإذن أولاً قبل التشغيل
+        status = ph.request_permission(Permission.CAMERA)
+        flashlight.turn_on()
+        page.snack_bar = SnackBar(content=Text("🔦 تم تشغيل الكشاف"))
+        page.snack_bar.open = True
         page.update()
 
     def turn_off(e):
-        if HAS_HARDWARE:
-            try:
-                hw_flashlight.off()
-            except Exception:
-                pass
-        page.show_snack_bar(SnackBar(content=Text("🔦 إيقاف الكشاف...")))
+        flashlight.turn_off()
+        page.snack_bar = SnackBar(content=Text("🔦 تم إيقاف الكشاف"))
+        page.snack_bar.open = True
         page.update()
 
-    # ✅ دالة آمنة للأندرويد بدل window_close()
     def show_exit_confirm(e):
-        page.show_dialog(
-            AlertDialog(
-                title=Text("خروج"),
-                content=Text("هل تريد إغلاق التطبيق؟"),
-                actions=[
-                    TextButton("لا", on_click=lambda _: page.pop_dialog()),
-                    TextButton("نعم", on_click=lambda _: exit(0)),
-                ],
-            )
+        # ✅ تصحيح إغلاق التطبيق في الأندرويد
+        def close_app(e):
+            page.window_close() # الطريقة الصحيحة لـ Flet
+
+        page.dialog = AlertDialog(
+            title=Text("خروج"),
+            content=Text("هل تريد إغلاق التطبيق؟"),
+            actions=[
+                TextButton("لا", on_click=lambda _: page.close_dialog()),
+                TextButton("نعم", on_click=close_app),
+            ],
         )
+        page.dialog.open = True
+        page.update()
 
-    # settings زر الاعدادات
-    # my_permission_handler = PermissionHandler()
-    # page.overlay.append(my_permission_handler)
-    # settings زر الاعدادات
-
-    # def check_permissions_and_on(e):
-    #     # طلب إذن الكاميرا (الفلاش جزء منها في الأندرويد)
-    #     # ملاحظة: في الكود الفعلي للأندرويد يفضل استخدام await مع الدوال المتزامنة
-    #     # my_permission_handler.request_permission(PermissionGroup.CAMERA)
-    #     my_permission_handler.request_permission("camera")  # ✅ النص هو الطريقة المعتمدة حاليًا
-    #     flashlight.turn_on()
-    #     page.update()
-
-    # def open_settings(e):
-    #     my_permission_handler.open_app_settings()
-
+    # --- واجهة المستخدم (نفس تصميمك مع تعديل بسيط للأزرار) ---
     page.add(
         AppBar(
             title=Text("Flash Light"),
-            color=Colors.WHITE,
-            bgcolor=Colors.RED,
-            actions=[  # اضافة ايقونات او ازرار لها احداث
-                # IconButton(Icons.SETTINGS,on_click = open_settings),
+            bgcolor=colors.RED,
+            color=colors.WHITE,
+            actions=[
                 PopupMenuButton(
                     items=[
-                        PopupMenuItem('إعدادات التطبيق'),
-                        PopupMenuItem('من نحن'),
-                        PopupMenuItem(),  # اضافة فاصل
-                        PopupMenuItem('إغلاق التطبيق', on_click=show_exit_confirm),
+                        PopupMenuItem(text="إغلاق التطبيق", on_click=show_exit_confirm),
                     ]
                 )
             ]
         ),
-        Row(
-            controls=[Text('\n\nFlash Light App',size=31,color=Colors.BLACK)],
-            alignment=MainAxisAlignment.CENTER  # هذا السطر يوسط العناصر داخل الصف
-        ),
-        Row(
-            controls=[Image(src='logof.png', width=360)],        # ✅ تأكد أن logof.png داخل مجلد assets/
-            alignment=MainAxisAlignment.CENTER                   # هذا السطر يوسط العناصر داخل الصف
-        ),
-        Row(
+        Column(
+            horizontal_alignment=CrossAxisAlignment.CENTER,
             controls=[
-                Button(
-                    'ON',
-                    width=100,
-                    color='white',
-                    icon=Icons.PLAY_ARROW,
-                    style=ButtonStyle(
-                        bgcolor=Colors.GREEN,
-                        color=Colors.WHITE,
-                        padding=15,
-                        shape=ContinuousRectangleBorder(radius=100),
-                    ),
-                    on_click=turn_on
+                Text("\nFlash Light App", size=31, weight="bold"),
+                Image(src="logof.png", width=360),
+                Row(
+                    alignment=MainAxisAlignment.CENTER,
+                    controls=[
+                        ElevatedButton("ON", bgcolor=colors.GREEN, color=colors.WHITE, on_click=turn_on, width=120),
+                        ElevatedButton("OFF", bgcolor=colors.RED, color=colors.WHITE, on_click=turn_off, width=120),
+                    ]
                 ),
-                Button(
-                    'OFF',
-                    width=100,
-                    color='white',
-                    icon=Icons.PLAY_DISABLED_SHARP,
-                    style=ButtonStyle(
-                        bgcolor=Colors.RED,
-                        color=Colors.WHITE,
-                        padding=15,
-                        shape=ContinuousRectangleBorder(radius=100),
-                    ),
-                    on_click=turn_off
-                )
-            ],
-            alignment=MainAxisAlignment.CENTER  # هذا السطر يوسط العناصر داخل الصف
-        ),
-        Row(
-            controls=[
-                Text('\n\nAshraf Flash Light App 2026', size=14, color=Colors.BLACK),
-            ],
-            alignment=MainAxisAlignment.CENTER  # هذا السطر يوسط العناصر داخل الصف
-        ),
+                Text("\nAshraf Flash Light App 2026", size=14)
+            ]
+        )
     )
 
 if __name__ == "__main__":
-    # ✅ assets_dir ضروري لتحميل الصور من مجلد assets/
     run(main, assets_dir="assets")
