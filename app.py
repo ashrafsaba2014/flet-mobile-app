@@ -14,7 +14,7 @@
 from flet import *                          # استيراد جميع أدوات مكتبة Flet لبناء الواجهة
 from flet_flashlight import Flashlight
 # يجب تثبيت:     pip install flet-permission-handler
-from flet_permission_handler import PermissionHandler, PermissionGroup
+from flet_permission_handler import PermissionHandler  # ✅ إزالة PermissionGroup
 
 def main(page: Page):                       # الدالة الأساسية التي يبدأ منها التطبيق وتتحكم في الصفحة
     page.title = "Ashraf Mobile Flash"      # تحديد نص عنوان نافذة التطبيق
@@ -41,7 +41,8 @@ def main(page: Page):                       # الدالة الأساسية ال
     def check_permissions_and_on(e):
         # طلب إذن الكاميرا (الفلاش جزء منها في الأندرويد)
         # ملاحظة: في الكود الفعلي للأندرويد يفضل استخدام await مع الدوال المتزامنة
-        my_permission_handler.request_permission(PermissionGroup.CAMERA)
+        # my_permission_handler.request_permission(PermissionGroup.CAMERA)
+        my_permission_handler.request_permission("camera")  # ✅ النص هو الطريقة المعتمدة حاليًا
         flashlight.turn_on()
         page.update()
 
