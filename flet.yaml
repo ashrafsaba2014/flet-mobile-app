@@ -1,7 +1,14 @@
 app:
   name: "AshrafFlash"
-  package: "com.ashraf.flash.final" # تغيير الاسم لضمان تثبيت نظيف
+  package: "com.ashraf.final.light" # تغيير الاسم يضمن تثبيت نظيف بعيداً عن أخطاء النسخ السابقة
+
 build:
   android:
+    # الأذونات الأساسية فقط
     permissions:
       - CAMERA
+    # تحديد رقم الإصدار لضمان قبول الأندرويد للملف
+    version_code: 1
+    version_name: "1.0.0"
+
+# حذفنا قسم الـ assets والـ dependencies الخارجية تماماً لضمان عدم وجود "شاشة بيضاء"
