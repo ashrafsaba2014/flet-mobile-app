@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5  # ✅ محدث لـ Node.js 24
+        uses: actions/checkout@v5
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -23,10 +23,12 @@ jobs:
           flutter-version: '3.41.4'
           cache: true
 
-      - name: Install Flet + Extensions
+      # ✅ الخطوة الحاسمة: تثبيت جميع المكتبات عبر pip مسبقًا
+      - name: Install Dependencies
         run: |
           pip install flet flet-cli flet-flashlight flet-permission-handler
 
+      # ✅ أمر البناء البسيط بدون خيارات غير مدعومة
       - name: Build APK
         run: flet build apk --module-name app
 
@@ -34,7 +36,7 @@ jobs:
         run: find . -name "*.apk"
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4  # ✅ محدث لـ Node.js 24
+        uses: actions/upload-artifact@v4
         with:
           name: app-release
           path: build/**/*.apk
