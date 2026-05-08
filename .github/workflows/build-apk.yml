@@ -27,7 +27,7 @@ jobs:
         run: pip install flet flet-cli
 
       - name: Build APK
-        run: flet build apk --module-name app
+        run: flet build apk --module-name app --include-packages flet_flashlight,flet_permission_handler
 
       - name: Find APK
         run: find . -name "*.apk"
