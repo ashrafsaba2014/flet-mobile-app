@@ -20,15 +20,28 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          # تم التعديل للإصدار الذي طلبه النظام في الخطأ
-          flutter-version: '3.41.4' 
+          flutter-version: '3.41.4'
           cache: true
 
       - name: Install Dependencies
         run: |
           pip install flet flet-cli flet-flashlight flet-permission-handler
 
-      - name: Build APK
+      - name: Build APK (Detailed Mode)
+        # أضفنا --verbose لرؤية تفاصيل الخطوات في سجلات GitHub
         run: |
-          # إضافة yes | تجعل النظام يوافق تلقائياً على أي سؤال يظهر أثناء البناء
-          yes | flet build apk --module-name app
+          yes | flet build apk --module-name app --verbose
+
+      - name: Locate and Move APK
+        # سنقوم بالبحث عن الملف ونقله لمجلد واضح في الجذور لضمان الرفع
+        run: |
+          mkdir -p output
+          find . -name "*.apk" -exec cp {} output/ \;
+          ls -R output
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Flashlight-App-New
+          path: output/*.apk
+          if-no-files-found: error
