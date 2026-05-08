@@ -2,9 +2,6 @@ app:
   name: "Ashraf Flash"
   package: "com.ashraf.flashlight"
 
-assets:
-  path: assets
-
 build:
   android:
     permissions:
