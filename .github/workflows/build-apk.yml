@@ -38,8 +38,8 @@ jobs:
 
       - name: Build APK
         run: |
-          # استخدمنا --module-name app لأن ملفك اسمه app.py
-          flet build apk --module-name app
+          # استخدمنا --module-name app لأن ملفك اسمه app.py          
+          flet build apk --module-name app --requirements requirements.txt
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
