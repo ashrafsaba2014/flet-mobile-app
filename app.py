@@ -2,46 +2,52 @@ from flet import *
 import os
 
 def main(page: Page):
-    page.title = "Ashraf Flashlight"
+    # إعدادات الصفحة الأساسية لضمان ظهور العناصر
+    page.title = "Ashraf Flash"
     page.theme_mode = ThemeMode.LIGHT
-    page.horizontal_alignment = CrossAxisAlignment.CENTER
+    page.padding = 20
     page.vertical_alignment = MainAxisAlignment.CENTER
+    page.horizontal_alignment = CrossAxisAlignment.CENTER
 
     def set_flashlight(status):
-        # status: 1 للتشغيل، 0 للإطفاء
+        # محاولة تشغيل الكشاف عبر أوامر النظام
         try:
-            # محاولة تشغيل الكشاف عبر أوامر النظام في أندرويد
             os.system(f"cmd notification post -S flash {status}")
-            # طريقة ثانية لضمان العمل على إصدارات مختلفة
-            os.system(f"service call flashlight {status+1}") 
         except:
             pass
 
-    def turn_on(e):
-        set_flashlight(1)
-        page.snack_bar = SnackBar(Text("🔦 تم إرسال أمر التشغيل"))
-        page.snack_bar.open = True
-        page.update()
-
-    def turn_off(e):
-        set_flashlight(0)
-        page.snack_bar = SnackBar(Text("🔦 تم إرسال أمر الإيقاف"))
-        page.snack_bar.open = True
-        page.update()
-
+    # واجهة بسيطة ومباشرة لضمان عدم حدوث خطأ في الرسم
     page.add(
-        AppBar(title=Text("Ashraf Flashlight"), bgcolor=colors.RED, color=colors.WHITE),
-        Text("Flashlight App", size=30, weight="bold"),
-        Image(src="logof.png", width=300),
+        Text("Ashraf Flashlight", size=30, weight="bold", color="red"),
+        Divider(height=20, color="transparent"),
+        # تأكد من وجود الصورة أو سيظهر مكان فارغ (يفضل وضع الصورة في حاوية)
+        Container(
+            content=Image(src="logof.png", width=250, error_content=Icon(icons.FLASH_ON, size=100)),
+            alignment=alignment.center,
+        ),
+        Divider(height=20, color="transparent"),
         Row(
             alignment=MainAxisAlignment.CENTER,
             controls=[
-                ElevatedButton("ON", on_click=turn_on, bgcolor=colors.GREEN, color=colors.WHITE, width=120),
-                ElevatedButton("OFF", on_click=turn_off, bgcolor=colors.RED, color=colors.WHITE, width=120),
+                ElevatedButton(
+                    "ON", 
+                    bgcolor="green", 
+                    color="white", 
+                    width=120, 
+                    on_click=lambda _: set_flashlight(1)
+                ),
+                ElevatedButton(
+                    "OFF", 
+                    bgcolor="red", 
+                    color="white", 
+                    width=120, 
+                    on_click=lambda _: set_flashlight(0)
+                ),
             ]
         ),
-        Text("\nAshraf Flash Light App 2026", size=14)
+        Text("\nAshraf App 2026", size=12, color="grey")
     )
+    page.update()
 
 if __name__ == "__main__":
     run(main, assets_dir="assets")
