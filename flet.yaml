@@ -6,3 +6,8 @@ build:
   android:
     permissions:
       - CAMERA
+
+# ضروري جداً لظهور الصور وعدم تجمد الصفحة
+assets:
+  include:
+    - assets/**
