@@ -38,8 +38,8 @@ jobs:
 
       - name: Build APK
         run: |
-          # استخدمنا --module-name app لأن ملفك اسمه app.py
-          flet build apk --module-name app --requirements requirements.txt
+          # حذفنا الجزء الخاص بـ --requirements لأنه يسبب الخطأ
+          flet build apk --module-name app
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
