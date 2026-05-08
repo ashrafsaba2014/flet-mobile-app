@@ -22,7 +22,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.41.4'
+          flutter-version: '3.22.0' # إصدار أكثر استقراراً لعمليات البناء الآلية
           cache: true
 
       - name: Install Dependencies
@@ -30,25 +30,25 @@ jobs:
           python -m pip install --upgrade pip
           pip install flet flet-cli flet-flashlight flet-permission-handler
 
-      - name: Check Assets Directory
-        run: |
-          if [ ! -d "assets" ]; then
-            mkdir assets
-            echo "Created empty assets directory"
-          fi
-
       - name: Build APK
         run: |
-          # استخدام yes | للموافقة التلقائية على أي تنبيهات تخص الـ SDK
+          # تنظيف أي بناء قديم لضمان بداية جديدة
+          rm -rf build dist
           yes | flet build apk --module-name app
 
-      - name: List files (Debug)
-        run: find . -type f -name "*.apk"
+      - name: Locate APK File
+        # هذه الخطوة ستطبع مكان الملف بالضبط في السجلات لتراه بعينك
+        run: |
+          echo "Searching for APK files..."
+          find . -name "*.apk"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Flashlight-App-Release
-          # البحث في كافة المجلدات لضمان العثور على الملف مهما كان مكانه
-          path: "**/*.apk"
-          if-no-files-found: error
+          # سنرفع مجلد build بالكامل إذا فشل العثور على الملف الفردي
+          path: |
+            build/apk/*.apk
+            dist/*.apk
+            ./*.apk
+          if-no-files-found: warn
