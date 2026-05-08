@@ -1,7 +1,6 @@
 app:
-  name: "Ashraf Flash"
-  package: "com.ashraf.flashlight"
-
+  name: "AshrafFlash"
+  package: "com.ashraf.flash.final" # تغيير الاسم لضمان تثبيت نظيف
 build:
   android:
     permissions:
