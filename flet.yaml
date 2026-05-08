@@ -2,12 +2,11 @@ app:
   name: "Ashraf Flash"
   package: "com.ashraf.flashlight"
 
+# تأكد أن هذا الجزء موجود لضمان ظهور العناصر
+assets:
+  path: assets
+
 build:
   android:
     permissions:
       - CAMERA
-
-# ضروري جداً لظهور الصور وعدم تجمد الصفحة
-assets:
-  include:
-    - assets/**
