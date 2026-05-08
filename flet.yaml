@@ -6,12 +6,12 @@ build:
   android:
     permissions:
       - CAMERA
-    # ✅ التعديل هنا: استخدم "packages" بدلاً من "dependencies" لضمان الدمج
-    packages:
+    # 💡 هذا الجزء هو الذي يدمج كود الـ Java/Kotlin الخاص بالكشاف
+    dependencies:
       - flet_flashlight
       - flet_permission_handler
 
-# الاعتماديات العامة لمكتبة بايثون
+# الاعتماديات العامة لبايثون
 dependencies:
   - flet-flashlight
   - flet-permission-handler
