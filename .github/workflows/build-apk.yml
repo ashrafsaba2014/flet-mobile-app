@@ -13,8 +13,8 @@ jobs:
         with:
           flutter-version: '3.19.0' # 👈 نسخة مستقرة جداً لـ Flet      
       - run: |
-          pip install flet==0.21.2 flet-flashlight flet-permission-handler
-          flet build apk --module-name app
+          pip install flet==0.21.2 flet-flashlight flet-permission-handler          
+          flet build apk --main app.py
       - uses: actions/upload-artifact@v4
         with:
           name: Flash-Success
