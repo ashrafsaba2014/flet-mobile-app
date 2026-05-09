@@ -6,6 +6,7 @@ build:
   android:
     permissions:
       - CAMERA
+      - FLASHLIGHT
     dependencies:
       - flet_flashlight
       - flet_permission_handler
