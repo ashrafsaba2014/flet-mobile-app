@@ -16,21 +16,15 @@ async def main(page: ft.Page):
     page.overlay.extend([flash, ph])
 
     async def toggle_on(e):
-        # طلب الإذن بشكل صحيح والانتظار
+        # طلب الإذن والانتظار
         status = await ph.request_permission(Permission.CAMERA)
         if status == "granted":
             await flash.turn_on()
-            page.snack_bar = ft.SnackBar(ft.Text("🔦 Flashlight ON"))
-        else:
-            page.snack_bar = ft.SnackBar(ft.Text("🚫 Permission Denied"))
-        page.snack_bar.open = True
-        await page.update_async()
+        page.update()
 
     async def toggle_off(e):
         await flash.turn_off()
-        page.snack_bar = ft.SnackBar(ft.Text("🌑 Flashlight OFF"))
-        page.snack_bar.open = True
-        await page.update_async()
+        page.update()
 
     page.add(
         ft.Icon(ft.icons.FLASHLIGHT_ON, size=80, color=ft.colors.AMBER),
