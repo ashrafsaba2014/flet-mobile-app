@@ -10,3 +10,4 @@ build:
     dependencies:
       - flet_flashlight
       - flet_permission_handler
+
