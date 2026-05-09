@@ -1,39 +1,36 @@
 import flet as ft
+import asyncio
 
-def main(page: ft.Page):
+async def main(page: ft.Page):
     page.title = "Ashraf Flash"
     page.theme_mode = ft.ThemeMode.LIGHT
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-    # Safe import for the native extensions
-    try:
-        from flet_flashlight import Flashlight
-        from flet_permission_handler import PermissionHandler, Permission
-        
-        flash = Flashlight()
-        ph = PermissionHandler()
-        page.overlay.extend([flash, ph])
-        has_ext = True
-    except:
-        has_ext = False
+    # استدعاء الإضافات
+    from flet_flashlight import Flashlight
+    from flet_permission_handler import PermissionHandler, Permission
+    
+    flash = Flashlight()
+    ph = PermissionHandler()
+    page.overlay.extend([flash, ph])
 
-    def toggle_on(e):
-        if has_ext:
-            # Explicitly request permission before turning on
-            status = ph.request_permission(Permission.CAMERA)
-            flash.turn_on()
+    async def toggle_on(e):
+        # طلب الإذن بشكل صحيح والانتظار
+        status = await ph.request_permission(Permission.CAMERA)
+        if status == "granted":
+            await flash.turn_on()
             page.snack_bar = ft.SnackBar(ft.Text("🔦 Flashlight ON"))
-            page.snack_bar.open = True
         else:
-            page.snack_bar = ft.SnackBar(ft.Text("⚠️ Extension Missing"))
-            page.snack_bar.open = True
-        page.update()
+            page.snack_bar = ft.SnackBar(ft.Text("🚫 Permission Denied"))
+        page.snack_bar.open = True
+        await page.update_async()
 
-    def toggle_off(e):
-        if has_ext:
-            flash.turn_off()
-        page.update()
+    async def toggle_off(e):
+        await flash.turn_off()
+        page.snack_bar = ft.SnackBar(ft.Text("🌑 Flashlight OFF"))
+        page.snack_bar.open = True
+        await page.update_async()
 
     page.add(
         ft.Icon(ft.icons.FLASHLIGHT_ON, size=80, color=ft.colors.AMBER),
@@ -46,6 +43,7 @@ def main(page: ft.Page):
             alignment=ft.MainAxisAlignment.CENTER,
         )
     )
+    await page.update_async()
 
 if __name__ == "__main__":
     ft.app(target=main)
