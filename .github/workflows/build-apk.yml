@@ -18,9 +18,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          # استخدام إصدارات مستقرة ومتوافقة مع flet 0.21.2
-          pip install flet==0.21.2 flet-flashlight==0.84.0 flet-permission-handler==0.84.0
-
+          # تثبيت فليت الأساسي
+          pip install flet==0.21.2
+          # تثبيت الإضافات وتجاهل فحص الاعتماديات لمنع الخطأ
+          pip install flet-flashlight flet-permission-handler --no-deps
           
       - name: Build APK
         run: |
