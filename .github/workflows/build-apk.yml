@@ -13,13 +13,14 @@ jobs:
           
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
-          
+          flutter-version: '3.19.0'              
+
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          # تثبيت الإصدارات المحددة مباشرة لمنع الـ Backtracking
-          pip install flet==0.21.2 flet-flashlight==0.21.2 flet-permission-handler==0.21.2
+          # استخدام إصدارات مستقرة ومتوافقة مع flet 0.21.2
+          pip install flet==0.21.2 flet-flashlight==0.84.0 flet-permission-handler==0.84.0
+
           
       - name: Build APK
         run: |
