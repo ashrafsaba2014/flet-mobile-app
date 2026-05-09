@@ -1,4 +1,4 @@
 flet==0.21.2
-flet-flashlight==0.84.0
-flet-permission-handler==0.84.0
+flet-flashlight
+flet-permission-handler
 
