@@ -6,16 +6,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0' # 👈 نسخة مستقرة جداً لـ Flet      
-      - run: |
-          pip install flet==0.21.2 flet-flashlight flet-permission-handler          
+          flutter-version: '3.19.0'
+          
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          # تثبيت الإصدارات المحددة مباشرة لمنع الـ Backtracking
+          pip install flet==0.21.2 flet-flashlight==0.21.2 flet-permission-handler==0.21.2
+          
+      - name: Build APK
+        run: |
+          # تأكد من أن اسم الملف هو app.py كما في مشروعك
           flet build apk --main app.py
+          
       - uses: actions/upload-artifact@v4
         with:
           name: Flash-Success
-          path: "**/*.apk"
+          path: "build/apk/*.apk"
